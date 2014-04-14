@@ -1,6 +1,6 @@
 require 'rufus-scheduler'
 
-namespace :zabbix
+namespace :zabbix do
   task :get_statistics => :environment do
     Rufus::Scheduler.new.tap do |scheduler|
       scheduler.every '1m' do
