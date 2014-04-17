@@ -4,7 +4,6 @@ require 'zabbix/monitor'
 module Zabbix
 
   class << self
-    attr_accessor :config
 
     # Call this method to modify defaults in your initializers.
     #
@@ -29,5 +28,4 @@ module Zabbix
       @config ||= Config.new
     end
   end
-
 end
