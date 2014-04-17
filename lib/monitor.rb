@@ -1,3 +1,0 @@
-module Monitor
-  # Your code goes here...
-end
