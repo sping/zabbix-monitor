@@ -46,5 +46,6 @@ module Zabbix
         raise "Unsupported mode: #{value}"
       end
     end
+
   end
 end
