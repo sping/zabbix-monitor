@@ -38,8 +38,6 @@ module Zabbix
         to_file key, value
       when :stdout
         to_stdout key, value
-      else
-        to_stdout key, value
       end
     end
 
