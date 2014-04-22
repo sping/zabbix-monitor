@@ -70,7 +70,7 @@ Start running your monitoring jobs with:
 
 ## Changelog
 
-A detailed overview can be found in the [CHANGELOG](https://github.com/sping/zabbix-monitor/blob/master/CHANGELOG.md).
+A detailed overview can be found in the [CHANGELOG](CHANGELOG.md).
 
 ## Contributing
 
