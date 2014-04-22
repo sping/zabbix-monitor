@@ -1,5 +1,7 @@
 module Zabbix
 
+  # The +Zabbix::Config+ object used for initializing zabbix-monitor
+  #
   # @example
   #   Zabbix.configure do |config|
   #     config.config_file_path = '/etc/zabbix/zabbix_agentd.conf'
@@ -13,7 +15,6 @@ module Zabbix
   #     ]
   #   end
   #
-
   class Config
 
     # @return [String] the zabbix agentd config file location
