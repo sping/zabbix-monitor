@@ -32,8 +32,8 @@ describe Zabbix::Monitor do
         exception = Exception.new("some error description")
         monitor.should_receive(:eval).and_raise(exception)
         monitor.should_not_receive(:process_data)
-        STDOUT.should_receive(:puts).with('NO GOOD')
-        STDOUT.should_receive(:puts).with(exception.message)
+        monitor.should_receive(:puts).with('NO GOOD')
+        monitor.should_receive(:puts).with(exception.message)
         monitor.collect_data
       end
     end
@@ -81,16 +81,17 @@ describe Zabbix::Monitor do
     end
     it 'executes the zabbix_sender command with the correct arguments' do
       monitor.should_receive(:'`').once.with('zabbix_sender -c /zabbix.conf -s "servername" -k key -o value')
+      monitor.stub(:puts) {}
       monitor.send(:to_zabbix, 'key', 'value')
     end
     it 'outputs GREAT if the command is executed without errors' do
       monitor.stub(:'`') { `(exit 0)` }
-      STDOUT.should_receive(:puts).with('GREAT')
+      monitor.should_receive(:puts).with('GREAT')
       monitor.send(:to_zabbix, 'key', 'value')
     end
     it 'outputs BUMMER if the command is executed with an error' do
       monitor.stub(:'`') { `(exit -1)` }
-      STDOUT.should_receive(:puts).with('BUMMER')
+      monitor.should_receive(:puts).with('BUMMER')
       monitor.send(:to_zabbix, 'key', 'value')
     end
   end
@@ -108,7 +109,7 @@ describe Zabbix::Monitor do
 
   describe "#to_stdout" do
     it 'receives the key and value as a puts command' do
-      STDOUT.should_receive(:puts).with('key: the value')
+      monitor.should_receive(:puts).with('key: the value')
       monitor.send(:to_stdout, 'key', 'the value')
     end
   end
