@@ -69,13 +69,14 @@ module Zabbix
     # @return [void]
     def to_file key, value
       filename = 'tmp/zabbix-stats.yml'
-      File.mkdir 'tmp' unless File.directory?('tmp')
+      Dir.mkdir 'tmp' unless Dir.exists? 'tmp'
       if File.exists? filename
         yml = YAML::load_file(filename)
       else
         yml = {'statistics' => {'created_at' => Time.now.to_i}}
       end
       yml['statistics'][key] = value
+
       File.open(filename, 'w') { |file| file.write yml.to_yaml }
     end
 

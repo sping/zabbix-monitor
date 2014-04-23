@@ -97,13 +97,41 @@ describe Zabbix::Monitor do
   end
 
   describe "#to_file" do
-    pending 'not implemented yet'
+    it 'creates the tmp folder if it does not exist' do
+      expect(Dir).to receive(:mkdir).once.with('tmp')
+      expect(Dir).to receive(:exists?).once.with('tmp').and_return(false)
+      monitor.send(:to_file, 'key', 'value')
+    end
+    it 'will not create the tmp folder if it already exists' do
+      expect(Dir).not_to receive(:mkdir).with('tmp')
+      expect(Dir).to receive(:exists?).once.with('tmp').and_return(true)
+      monitor.send(:to_file, 'key', 'value')
+    end
+    before :each do
+      Dir.stub(:exists?) { true }
+    end
+    describe 'writeing and reading' do
+      it 'writes the result to "tmp/zabbix-stats.yml"' do
+        File.stub(:exists?) { false }
+        file = mock('file')
+        yml = {'statistics' => {'created_at' => Time.now.to_i, 'key' => 'value'}}
 
-    # just to have that 100% coverage!
-    it 'raises a exception' do
-      expect {
-        monitor.send(:to_file, 'key', 'the value')
-      }.to raise_error(StandardError, 'Write to file is not implemented yet')
+        expect(File).to receive(:open).with('tmp/zabbix-stats.yml', 'w').and_yield(file)
+        expect(file).to receive(:write).with(yml.to_yaml)
+        monitor.send(:to_file, 'key', 'value')
+      end
+      it 'adds the key and value to the output file if it already exists' do
+        File.stub(:exists?) { true }
+        file = mock('file')
+        yml = {'statistics' => {'created_at' => Time.now.to_i, 'old_key' => 'old_value'}}
+
+        expect(YAML).to receive(:load_file).once.with('tmp/zabbix-stats.yml').and_return(yml)
+        expect(File).to receive(:open).with('tmp/zabbix-stats.yml', 'w').and_yield(file)
+
+        yml['statistics']['key'] = 'value'
+        expect(file).to receive(:write).with(yml.to_yaml)
+        monitor.send(:to_file, 'key', 'value')
+      end
     end
   end
 
