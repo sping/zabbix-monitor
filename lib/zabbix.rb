@@ -1,6 +1,7 @@
 require 'zabbix/config'
 require 'zabbix/monitor'
 require 'zabbix/file_parser'
+require 'yell'
 
 # Zabbix Monitor
 module Zabbix
@@ -29,7 +30,15 @@ module Zabbix
 
     # @return [Zabbix::Config] creates a new or returns the existing the zabbix-monitor config
     def config
+      Zabbix.logger.info "fetched config"
       @config ||= Config.new
+    end
+
+    # @return [Yell] creates a new or returns the +Yell+ logger instance
+    def logger
+      @logger ||= Yell.new do |l|
+        l.adapter :datefile, :symlink => true
+      end
     end
   end
 end
