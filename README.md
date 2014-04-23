@@ -1,6 +1,17 @@
 # Zabbix Monitor
+[![Gem Version](https://badge.fury.io/rb/zabbix-monitor.png)][gemversion]
+[![Build Status](https://secure.travis-ci.org/sping/zabbix-monitor.png?branch=master)][travis]
+[![Coverage Status](https://coveralls.io/repos/sping/zabbix-monitor/badge.png?branch=coveralls)][coveralls]
+[![Code Climate](https://codeclimate.com/github/sping/zabbix-monitor.png)][codeclimate]
+
+[gemversion]: http://badge.fury.io/rb/zabbix-monitor
+[travis]: http://travis-ci.org/sping/zabbix-monitor
+[coveralls]: https://coveralls.io/r/sping/zabbix-monitor?branch=coveralls
+[codeclimate]: https://codeclimate.com/github/sping/zabbix-monitor
 
 Zabbix monitoring for Ruby apps. Works with pushing and polling: push data to the agent server with zabbix_sender or collect data with the Zabbix agent.
+
+Here you can find [Documentation](http://rubydoc.info/github/sping/zabbix-monitor/master/frames)
 
 ## Installation
 
@@ -28,17 +39,19 @@ To include the rake tasks in your application, add the following line to your Ra
 
 Place your Zabbix Monitoring configuration in an initializer:
 
-    Zabbix.configure do |config|
-      config.config_file_path = '/etc/zabbix/zabbix_agentd.conf'
-      config.host_name = 'servername'
-      config.mode = :push
-      config.rules = [
-        {
-          :command => 'Monitor.new.test',
-          :zabbix_key => 'zabbix.test'
-        }
-      ]
-    end
+```ruby
+Zabbix.configure do |config|
+  config.config_file_path = '/etc/zabbix/zabbix_agentd.conf'
+  config.host_name = 'servername'
+  config.mode = :push
+  config.rules = [
+    {
+      :command => 'Monitor.new.test',
+      :zabbix_key => 'zabbix.test'
+    }
+  ]
+end
+```
 
 Put the host name as configured in your Zabbix server config in `config.host_name`.
 
@@ -53,6 +66,11 @@ Put your monitoring rules in `config.rules`. Each rule contains a Ruby command t
 Start running your monitoring jobs with:
 
     $ rake zabbix:collect_data
+
+
+## Changelog
+
+A detailed overview can be found in the [CHANGELOG](CHANGELOG.md).
 
 ## Contributing
 
