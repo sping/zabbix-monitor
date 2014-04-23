@@ -1,4 +1,6 @@
 require 'json'
+require 'yaml'
+require 'fileutils'
 
 module Zabbix
 
@@ -64,7 +66,15 @@ module Zabbix
     #
     # @return [void]
     def to_file key, value
-      raise 'Write to file is not implemented yet'
+      filename = 'tmp/zabbix-stats.yml'
+      File.mkdir 'tmp' unless File.directory?('tmp')
+      if File.exists? filename
+        yml = YAML::load_file(filename)
+      else
+        yml = {'statistics' => {'created_at' => Time.now.to_i}}
+      end
+      yml['statistics'][key] = value
+      File.open(filename, 'w') { |file| file.write yml.to_yaml }
     end
 
     # Prints the result of the monitored rule to stdout

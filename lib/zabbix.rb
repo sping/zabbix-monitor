@@ -1,5 +1,6 @@
 require 'zabbix/config'
 require 'zabbix/monitor'
+require 'zabbix/file_parser'
 
 # Zabbix Monitor
 module Zabbix

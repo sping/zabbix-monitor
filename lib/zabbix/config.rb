@@ -30,7 +30,7 @@ module Zabbix
     #
     #   Options:
     #     :push uses the Zabbix agent to push the data to the Zabbix server
-    #     :file writes the data to tmp/zabbix/monitor
+    #     :file writes the data to tmp/zabbix-stats.yml
     #     :stdout writes the data to the stdout
     #
     #   @param value [Symbol] the mode

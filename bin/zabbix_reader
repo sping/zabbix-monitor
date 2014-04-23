@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'zabbix'
+
+puts Zabbix::FileParser.new.get_value ARGV[0]
