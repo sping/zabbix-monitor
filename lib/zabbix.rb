@@ -13,6 +13,7 @@ module Zabbix
     # @example
     #   Zabbix.configure do |config|
     #     config.config_file_path = '/etc/zabbix/zabbix_agentd.conf'
+    #     config.log_file_path = '/var/log/monitor.log' #optional
     #     config.host_name = 'servername'
     #     config.mode = :push
     #     config.rules = [
@@ -36,7 +37,7 @@ module Zabbix
     # @return [Yell] creates a new or returns the +Yell+ logger instance
     def logger
       @logger ||= Yell.new do |l|
-        l.adapter :datefile, :symlink => true
+        l.adapter :datefile, :filename => self.config.log_file_path, :symlink => true
       end
     end
   end

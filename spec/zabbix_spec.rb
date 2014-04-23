@@ -1,13 +1,16 @@
 require 'spec_helper'
 
 describe Zabbix do
-  describe "#configure" do
+  before :each do
+    # reset config
+    Zabbix.send(:config) { nil }
+  end
 
+  describe "#configure" do
     describe "basic config vars and behaviour" do
+
       it 'creates a new config for the Zabbix monitor instance' do
-        config = Zabbix::Config.new
-        Zabbix::Config.stub(:new) { config }
-        Zabbix.config.should eq config
+        Zabbix.config.should be_kind_of(Zabbix::Config)
       end
       it 'set the correct config values' do
         Zabbix.configure do |config|
@@ -17,10 +20,17 @@ describe Zabbix do
         end
 
         Zabbix.config.config_file_path.should eq '/etc/zabbix/zabbix_agentd.conf'
+        Zabbix.config.log_file_path.should be_nil
         Zabbix.config.host_name.should eq 'servername'
         Zabbix.config.mode.should eq :push
         pending 'should rules be initialized as an empty array?'
         Zabbix.config.rules.count.should eq 0
+      end
+      it 'returns the correct log_file_path if specified' do
+        Zabbix.configure do |config|
+          config.log_file_path = '/var/log/monitor.log'
+        end
+        Zabbix.config.log_file_path.should eq '/var/log/monitor.log'
       end
     end
 

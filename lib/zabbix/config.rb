@@ -5,6 +5,7 @@ module Zabbix
   # @example
   #   Zabbix.configure do |config|
   #     config.config_file_path = '/etc/zabbix/zabbix_agentd.conf'
+  #     config.log_file_path = '/var/log/monitor.log' #optional
   #     config.host_name = 'servername'
   #     config.mode = :push
   #     config.rules = [
@@ -19,6 +20,10 @@ module Zabbix
 
     # @return [String] the zabbix agentd config file location
     attr_accessor :config_file_path
+    # @note
+    #   (optional) Defaults to +./log/#{RACK_ENV}.log+
+    # @return [String] The zabbix-monitor log file location (optional)
+    attr_accessor :log_file_path
     # @return [String] the zabbix hostname
     attr_accessor :host_name
     # @return [Array<Symbol>] the set of rules to monitor
@@ -47,6 +52,10 @@ module Zabbix
         Zabbix.logger.error "[Config] failed setting mode to '#{value}'"
         raise "Unsupported mode: #{value}"
       end
+    end
+
+    def log_file_path
+      @log_file_path || nil
     end
 
   end
