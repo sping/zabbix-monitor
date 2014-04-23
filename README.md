@@ -42,6 +42,8 @@ Place your Zabbix Monitoring configuration in an initializer:
 ```ruby
 Zabbix.configure do |config|
   config.config_file_path = '/etc/zabbix/zabbix_agentd.conf'
+  # optional, defaults to ./log/#{RACK_ENV}.log
+  # config.log_file_path = '/var/log/monitor.log'
   config.host_name = 'servername'
   config.mode = :push
   config.rules = [

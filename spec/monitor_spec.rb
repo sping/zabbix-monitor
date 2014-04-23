@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Zabbix::Monitor do
+  let(:logger)  { Zabbix.logger }
   let(:monitor) { Zabbix::Monitor.new }
   let(:config)  { Zabbix::Config.new }
 
@@ -24,16 +25,15 @@ describe Zabbix::Monitor do
         ]}
       end
       it 'executes the command once and passes it to process' do
-        monitor.should_receive(:eval).once.and_return("result")
-        monitor.should_receive(:process_data).once.with('some.key', 'result')
+        expect(monitor).to receive(:eval).once.and_return("result")
+        expect(monitor).to receive(:process_data).once.with('some.key', 'result')
         monitor.collect_data
       end
       it 'catches the exception if command can not be excuted' do
         exception = Exception.new("some error description")
-        monitor.should_receive(:eval).and_raise(exception)
-        monitor.should_not_receive(:process_data)
-        monitor.should_receive(:puts).with('NO GOOD')
-        monitor.should_receive(:puts).with(exception.message)
+        expect(monitor).to receive(:eval).and_raise(exception)
+        expect(monitor).not_to receive(:process_data)
+        expect(logger).to receive(:error).with(/some.key command: cmd with message: some error description/)
         monitor.collect_data
       end
     end
@@ -45,9 +45,9 @@ describe Zabbix::Monitor do
         ]}
       end
       it 'executes the command once and passes it to process' do
-        monitor.should_receive(:eval).twice.and_return("result")
-        monitor.should_receive(:process_data).once.with('some.key', 'result')
-        monitor.should_receive(:process_data).once.with('another.key', 'result')
+        expect(monitor).to receive(:eval).twice.and_return("result")
+        expect(monitor).to receive(:process_data).once.with('some.key', 'result')
+        expect(monitor).to receive(:process_data).once.with('another.key', 'result')
         monitor.collect_data
       end
     end
@@ -57,19 +57,19 @@ describe Zabbix::Monitor do
     it 'triggers the #to_zabbix for :push' do
       config.mode = :push
 
-      monitor.should_receive(:to_zabbix).once.with(1, 2)
+      expect(monitor).to receive(:to_zabbix).once.with(1, 2)
       monitor.send(:process_data, 1, 2)
     end
     it 'triggers the #to_file for :file' do
       config.mode = :file
 
-      monitor.should_receive(:to_file).once.with(1, 2)
+      expect(monitor).to receive(:to_file).once.with(1, 2)
       monitor.send(:process_data, 1, 2)
     end
     it 'triggers the #stdout for :stdout' do
       config.mode = :stdout
 
-      monitor.should_receive(:to_stdout).once.with(1, 2)
+      expect(monitor).to receive(:to_stdout).once.with(1, 2)
       monitor.send(:process_data, 1, 2)
     end
   end
@@ -80,36 +80,64 @@ describe Zabbix::Monitor do
       config.host_name = 'servername'
     end
     it 'executes the zabbix_sender command with the correct arguments' do
-      monitor.should_receive(:'`').once.with('zabbix_sender -c /zabbix.conf -s "servername" -k key -o value')
+      expect(monitor).to receive(:'`').once.with('zabbix_sender -c /zabbix.conf -s "servername" -k key -o value')
       monitor.stub(:puts) {}
       monitor.send(:to_zabbix, 'key', 'value')
     end
     it 'outputs GREAT if the command is executed without errors' do
       monitor.stub(:'`') { `(exit 0)` }
-      monitor.should_receive(:puts).with('GREAT')
+      expect(logger).to receive(:info).with(/successfully sended rule: 'key' to zabbix server: 'servername'/)
       monitor.send(:to_zabbix, 'key', 'value')
     end
     it 'outputs BUMMER if the command is executed with an error' do
       monitor.stub(:'`') { `(exit -1)` }
-      monitor.should_receive(:puts).with('BUMMER')
+      expect(logger).to receive(:error).with(/failed sending rule: 'key' with value: 'value' to zabbix server: 'servername'/)
       monitor.send(:to_zabbix, 'key', 'value')
     end
   end
 
   describe "#to_file" do
-    pending 'not implemented yet'
+    it 'creates the tmp folder if it does not exist' do
+      expect(Dir).to receive(:mkdir).once.with('tmp')
+      expect(Dir).to receive(:exists?).once.with('tmp').and_return(false)
+      monitor.send(:to_file, 'key', 'value')
+    end
+    it 'will not create the tmp folder if it already exists' do
+      expect(Dir).not_to receive(:mkdir).with('tmp')
+      expect(Dir).to receive(:exists?).once.with('tmp').and_return(true)
+      monitor.send(:to_file, 'key', 'value')
+    end
+    before :each do
+      Dir.stub(:exists?) { true }
+    end
+    describe 'writeing and reading' do
+      it 'writes the result to "tmp/zabbix-stats.yml"' do
+        File.stub(:exists?) { false }
+        file = mock('file')
+        yml = {'statistics' => {'created_at' => Time.now.to_i, 'key' => 'value'}}
 
-    # just to have that 100% coverage!
-    it 'raises a exception' do
-      expect {
-        monitor.send(:to_file, 'key', 'the value')
-      }.to raise_error(StandardError, 'Write to file is not implemented yet')
+        expect(File).to receive(:open).with('tmp/zabbix-stats.yml', 'w').and_yield(file)
+        expect(file).to receive(:write).with(yml.to_yaml)
+        monitor.send(:to_file, 'key', 'value')
+      end
+      it 'adds the key and value to the output file if it already exists' do
+        File.stub(:exists?) { true }
+        file = mock('file')
+        yml = {'statistics' => {'created_at' => Time.now.to_i, 'old_key' => 'old_value'}}
+
+        expect(YAML).to receive(:load_file).once.with('tmp/zabbix-stats.yml').and_return(yml)
+        expect(File).to receive(:open).with('tmp/zabbix-stats.yml', 'w').and_yield(file)
+
+        yml['statistics']['key'] = 'value'
+        expect(file).to receive(:write).with(yml.to_yaml)
+        monitor.send(:to_file, 'key', 'value')
+      end
     end
   end
 
   describe "#to_stdout" do
     it 'receives the key and value as a puts command' do
-      monitor.should_receive(:puts).with('key: the value')
+      expect(monitor).to receive(:puts).with('key: the value')
       monitor.send(:to_stdout, 'key', 'the value')
     end
   end
