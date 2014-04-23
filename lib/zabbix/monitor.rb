@@ -1,11 +1,24 @@
 require 'json'
 require 'yaml'
 require 'fileutils'
+require 'rufus-scheduler'
 
 module Zabbix
 
   # Base class for processing and delivering the results to an endpoint
   class Monitor
+
+    # Schedule the data collector
+    # @return [void]
+    def schedule
+      Rufus::Scheduler.new.tap do |scheduler|
+        scheduler.every '1m' do
+          ActiveRecord::Base.connection_pool.with_connection do
+            collect_data
+          end
+        end
+      end.join
+    end
 
     # Loops through all rules and process the result
     # @return [void]

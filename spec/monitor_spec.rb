@@ -15,6 +15,12 @@ describe Zabbix::Monitor do
     end
   end
 
+  describe '#schedule' do
+    it 'schedule the data collector to run every minute' do
+      pending 'add scheduler test magic here'
+    end
+  end
+
   describe "#collect_data" do
     # 'process data'
     # 'raise exception invalid rule, invalid command, no command'
