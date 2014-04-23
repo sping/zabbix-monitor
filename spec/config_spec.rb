@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Zabbix::Config do
+
   let(:logger) { Zabbix.logger }
   let(:config) { Zabbix::Config.new }
 

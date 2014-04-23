@@ -13,7 +13,7 @@ end
 require 'zabbix'
 
 RSpec.configure do |config|
-  # configure yell logger's env and remove the logs files afterwards
+  # configure yell logger's ENV and remove the logs files afterwards
   ENV['YELL_ENV'] = 'test'
 
   config.before :each do
