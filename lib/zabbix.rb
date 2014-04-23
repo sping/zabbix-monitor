@@ -30,7 +30,6 @@ module Zabbix
 
     # @return [Zabbix::Config] creates a new or returns the existing the zabbix-monitor config
     def config
-      Zabbix.logger.info "fetched config"
       @config ||= Config.new
     end
 

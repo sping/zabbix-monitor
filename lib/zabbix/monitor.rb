@@ -10,13 +10,15 @@ module Zabbix
     # Loops through all rules and process the result
     # @return [void]
     def collect_data
+      current_zabbix_rule = nil
       config.rules.each do |rule|
+        current_zabbix_rule = rule
         value = eval rule[:command]
         process_data rule[:zabbix_key], value
       end
     rescue Exception => e
-      puts 'NO GOOD'
-      puts e.message
+      message = "#{current_zabbix_rule[:zabbix_key]} command: #{current_zabbix_rule[:command]} with message: #{e.message}"
+      Zabbix.logger.error "[Monitor] failed collecting data for rule: #{message}"
     end
 
     private
@@ -53,9 +55,9 @@ module Zabbix
       result = `zabbix_sender -c #{config.config_file_path} -s "#{config.host_name}" -k #{key} -o #{value}`
       case $?.to_i
       when 0 # SUCCESS
-        puts 'GREAT'
+        Zabbix.logger.info "[Monitor] successfully sended rule: '#{key}' to zabbix server: '#{config.host_name}'"
       else
-        puts 'BUMMER'
+        Zabbix.logger.error "[Monitor] failed sending rule: '#{key}' with value: '#{value}' to zabbix server: '#{config.host_name}'"
       end
     end
 
