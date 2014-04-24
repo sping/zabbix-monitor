@@ -103,6 +103,10 @@ describe Zabbix::Monitor do
   end
 
   describe "#to_file" do
+    before :each do
+      File.stub(:exists?) { false }
+      File.stub(:open).with('tmp/zabbix-stats.yml', 'w')
+    end
     it 'creates the tmp folder if it does not exist' do
       expect(Dir).to receive(:mkdir).once.with('tmp')
       expect(Dir).to receive(:exists?).once.with('tmp').and_return(false)

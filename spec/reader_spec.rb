@@ -4,22 +4,27 @@ describe Zabbix::Reader do
 
   before :each do
     @filename = 'tmp/zabbix-stats.yml'
-    File.open(@filename, 'w') { |file| file.write({'statistics' => {'test' => 'OK'}}.to_yaml) } unless File.exists?(@filename)
+    # File.open(@filename, 'w') { |file| file.write({'statistics' => {'test' => 'OK'}}.to_yaml) } unless File.exists?(@filename)
   end
 
   describe 'initialize' do
     it 'raises an error when the file can\'t be found' do
-      File.delete(@filename)
+      expect(File).to receive(:exists?).with(@filename).and_return(false)
       expect{ Zabbix::Reader.new }.to raise_error(Zabbix::FileNotFoundError, 'Monitoring file not found')
     end
 
     it 'reads the monitoring file from tmp' do
+      expect(File).to receive(:exists?).with(@filename).and_return(true)
       expect(YAML).to receive(:load_file).with(@filename)
       Zabbix::Reader.new
     end
   end
 
   describe 'get_value' do
+    before :each do
+      File.stub(:exists?) { true }
+      YAML.stub(:load_file) { {'statistics' => {'test' => 'OK'}} }
+    end
     let(:reader) { Zabbix::Reader.new }
 
     it 'returns the requested value' do
