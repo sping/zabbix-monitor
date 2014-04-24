@@ -4,9 +4,9 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = 'zabbix-monitor'
-  spec.version       = '0.0.1'
-  spec.authors       = ['Robert Jan de Gelder']
-  spec.email         = ['r.degelder@sping.nl']
+  spec.version       = '0.0.2'
+  spec.authors       = ['Robert Jan de Gelder', 'Manuel van Rijn']
+  spec.email         = ['r.degelder@sping.nl', 'm.vanrijn@sping.nl']
   spec.description   = 'Zabbix application monitoring'
   spec.summary       = 'Let the Zabbix agent read your application monitoring'
   spec.homepage      = 'http://rubygems.org/gems/zabbix-monitor'
