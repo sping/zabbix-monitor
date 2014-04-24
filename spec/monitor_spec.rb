@@ -119,7 +119,7 @@ describe Zabbix::Monitor do
     describe 'writeing and reading' do
       it 'writes the result to "tmp/zabbix-stats.yml"' do
         File.stub(:exists?) { false }
-        file = mock('file')
+        file = double('file')
         yml = {'statistics' => {'created_at' => Time.now.to_i, 'key' => 'value'}}
 
         expect(File).to receive(:open).with('tmp/zabbix-stats.yml', 'w').and_yield(file)
@@ -128,7 +128,7 @@ describe Zabbix::Monitor do
       end
       it 'adds the key and value to the output file if it already exists' do
         File.stub(:exists?) { true }
-        file = mock('file')
+        file = double('file')
         yml = {'statistics' => {'created_at' => Time.now.to_i, 'old_key' => 'old_value'}}
 
         expect(YAML).to receive(:load_file).once.with('tmp/zabbix-stats.yml').and_return(yml)
