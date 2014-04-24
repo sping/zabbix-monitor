@@ -1,9 +1,13 @@
 # Zabbix Monitor Changelog
 
+### v0.0.3 (TBA)
+
+- Added codeclimate coverage
+
 ### v0.0.2 (2014-04-24)
 
 - Added :file mode
-    - Write monitoring data to tmp/zabbix-stats.yml
+    - Write monitoring data to `tmp/zabbix-stats.yml`
     - Read values with `$ zabbix_reader test`
 - Added specs
 - Added documentation
