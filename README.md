@@ -2,10 +2,12 @@
 [![Gem Version](https://badge.fury.io/rb/zabbix-monitor.png)][gemversion]
 [![Build Status](https://secure.travis-ci.org/sping/zabbix-monitor.png?branch=master)][travis]
 [![Code Climate](https://codeclimate.com/github/sping/zabbix-monitor.png)][codeclimate]
+[![Coverage](https://codeclimate.com/github/sping/zabbix-monitor/coverage.png)][coverage]
 
 [gemversion]: http://badge.fury.io/rb/zabbix-monitor
 [travis]: http://travis-ci.org/sping/zabbix-monitor
 [codeclimate]: https://codeclimate.com/github/sping/zabbix-monitor
+[coverage]: https://codeclimate.com/github/sping/zabbix-monitor
 
 Zabbix monitoring for Ruby apps. Works with pushing and polling: push data to the agent server with zabbix_sender or collect data with the Zabbix agent.
 

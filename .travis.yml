@@ -12,4 +12,9 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
+
+addons:
+  code_climate:
+    repo_token: af39e5d1bbdd46699d027fd4eee89ed4cfa9d560eeafccf1293423651d0d6b0c
+
 script: "bundle exec rake spec"
