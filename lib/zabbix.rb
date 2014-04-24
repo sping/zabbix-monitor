@@ -11,6 +11,8 @@ module Zabbix
     # Call this method to modify defaults in your initializers.
     #
     # @example
+    #   require 'zabbix'
+    #
     #   Zabbix.configure do |config|
     #     config.config_file_path = '/etc/zabbix/zabbix_agentd.conf'
     #     config.log_file_path = '/var/log/monitor.log' #optional
