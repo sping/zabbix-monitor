@@ -38,6 +38,8 @@ To include the rake tasks in your application, add the following line to your Ra
 Place your Zabbix Monitoring configuration in an initializer:
 
 ```ruby
+require 'zabbix'
+
 Zabbix.configure do |config|
   config.config_file_path = '/etc/zabbix/zabbix_agentd.conf'
   # optional, defaults to ./log/#{RACK_ENV}.log
@@ -58,7 +60,7 @@ Put the host name as configured in your Zabbix server config in `config.host_nam
 Set the `config.mode` to one of the following options:
 
 - `:push` uses the Zabbix agent to push the data to the Zabbix server
-- `:file` writes the data to tmp/zabbix/monitor
+- `:file` writes the data to tmp/zabbix-stats.yml
 - `:stdout` writes the data to the stdout
 
 Put your monitoring rules in `config.rules`. Each rule contains a Ruby command to be executed by the Zabbix Monitor and the key as configured on the Zabbix Server.

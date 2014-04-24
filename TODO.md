@@ -1,5 +1,4 @@
-# Todo
+# Zabbix Monitor Todo
 
-- Create :file mode
-- Make ActiveRecord independent
+- Make Rufus Schedulere ActiveRecord independent
 - Make schedule frequency configurable
