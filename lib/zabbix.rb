@@ -1,10 +1,12 @@
 require 'zabbix/config'
 require 'zabbix/monitor'
-require 'zabbix/file_parser'
+require 'zabbix/reader'
 require 'yell'
 
 # Zabbix Monitor
 module Zabbix
+
+  class FileNotFoundError < StandardError; end
 
   class << self
 

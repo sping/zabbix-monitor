@@ -2,4 +2,4 @@
 
 require 'zabbix'
 
-puts Zabbix::FileParser.new.get_value ARGV[0]
+puts Zabbix::Reader.new.get_value ARGV[0]
