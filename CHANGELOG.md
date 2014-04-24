@@ -5,7 +5,6 @@
 - 100% documented
 - Added services:
   - Travis CI
-  - Coveralls
   - Rdoc
 
 ### v0.0.1 (2014-04-17)
