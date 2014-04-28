@@ -147,7 +147,7 @@ describe Zabbix::Monitor do
 
   describe "#to_stdout" do
     it 'receives the key and value as a puts command' do
-      expect(monitor).to receive(:puts).with('key: the value')
+      expect(STDOUT).to receive(:puts).with('key: the value')
       monitor.send(:to_stdout, 'key', 'the value')
     end
   end

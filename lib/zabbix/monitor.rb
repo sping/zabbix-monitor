@@ -100,7 +100,7 @@ module Zabbix
     #
     # @return [void]
     def to_stdout key, value
-      puts "#{key}: #{value}"
+      $stdout.puts "#{key}: #{value}"
     end
   end
 end
