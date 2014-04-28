@@ -71,6 +71,30 @@ Start running your monitoring jobs with:
 
     $ rake zabbix:collect_data
 
+### File mode
+
+In `:file` mode, monitoring var can be read from the monitoring file using `zabbix_reader` command.
+Create a script that's been executed by the Zabbix daemon:
+
+```bash
+#! /bin/bash
+cd /path/to/app/
+echo $( RAILS_ENV=production bundle exec zabbix_reader $1 )
+```
+
+To speed up the reading of variables, you can also use awk to look for variables. Create the following script instead:
+
+```bash
+#! /bin/bash
+cd /path/to/app/
+
+if [ -f tmp/zabbix-stats.yml ]
+then
+  echo $( awk -F: -v var=$1 '$0 ~ var {$1=""; print $0; exit}' tmp/zabbix-stats.yml )
+else
+  echo Zabbix monitor file not found
+fi
+```
 
 ## Changelog
 
