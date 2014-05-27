@@ -21,4 +21,12 @@ namespace :zabbix do
     Zabbix.logger.info "[Rake] executing #stop, stopping daemon"
     Dante::Runner.new('zabbix-monitor').execute(:kill => true, :pid_path => 'tmp/zabbix-monitor.pid')
   end
+
+  desc 'Restart collecting data for Zabbix'
+  task :restart => :environment do
+    Zabbix.logger.info "[Rake] executing #stop, stopping daemon"
+    Dante::Runner.new('zabbix-monitor').execute(:daemonize => true, :restart => true, :pid_path => 'tmp/zabbix-monitor.pid') do
+      Zabbix::Monitor.new.schedule
+    end
+  end
 end
