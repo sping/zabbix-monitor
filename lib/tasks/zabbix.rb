@@ -1,15 +1,24 @@
 require 'zabbix'
+require 'dante'
 
 namespace :zabbix do
   desc 'Collect data for Zabbix'
-  task :collect_once => :environment do
+  task :run_once => :environment do
     Zabbix.logger.info "[Rake] executing #collect_once"
     Zabbix::Monitor.new.collect_data
   end
 
   desc 'Collect data for Zabbix every minute'
-  task :collect_data => :environment do
-    Zabbix.logger.info "[Rake] executing #collect_data, setting up Rufus"
-    LightDaemon::Daemon.start(Zabbix::Worker.new, :children=> 2, :pid_file => 'tmp/zabbix-monitor.pid')
+  task :start => :environment do
+    Zabbix.logger.info "[Rake] executing #start, setting up Rufus"
+    Dante::Runner.new('zabbix-monitor').execute(:daemonize => true, :pid_path => 'tmp/zabbix-monitor.pid', :log_path => 'log/zabbix-monitor.log') do
+      Zabbix::Monitor.new.schedule
+    end
+  end
+
+  desc 'Stop collecting data for Zabbix'
+  task :stop => :environment do
+    Zabbix.logger.info "[Rake] executing #stop, stopping daemon"
+    Dante::Runner.new('zabbix-monitor').execute(:kill => true, :pid_path => 'tmp/zabbix-monitor.pid')
   end
 end
