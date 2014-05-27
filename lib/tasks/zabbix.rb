@@ -10,6 +10,6 @@ namespace :zabbix do
   desc 'Collect data for Zabbix every minute'
   task :collect_data => :environment do
     Zabbix.logger.info "[Rake] executing #collect_data, setting up Rufus"
-    Zabbix::Monitor.new.schedule
+    LightDaemon::Daemon.start(Zabbix::Worker.new, :children=> 2, :pid_file => 'tmp/zabbix-monitor.pid')
   end
 end
