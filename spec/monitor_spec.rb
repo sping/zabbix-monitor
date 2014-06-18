@@ -96,7 +96,7 @@ describe Zabbix::Monitor do
       monitor.send(:to_zabbix, 'key', 'value')
     end
     it 'outputs BUMMER if the command is executed with an error' do
-      monitor.stub(:'`') { `(exit -1)` }
+      monitor.stub(:'`') { `(exit 1)` }
       expect(logger).to receive(:error).with(/failed sending rule: 'key' with value: 'value' to zabbix server: 'servername'/)
       monitor.send(:to_zabbix, 'key', 'value')
     end
