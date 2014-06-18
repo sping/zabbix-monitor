@@ -23,6 +23,7 @@ module Zabbix
     # Loops through all rules and process the result
     # @return [void]
     def collect_data
+      Zabbix.logger.info '[Monitor] collecting data'
       current_zabbix_rule = nil
       config.rules.each do |rule|
         current_zabbix_rule = rule
