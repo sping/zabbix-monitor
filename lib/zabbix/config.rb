@@ -46,10 +46,8 @@ module Zabbix
     def mode= value
       allowed_modes = [:push, :file, :stdout].freeze
       if allowed_modes.include?(value)
-        Zabbix.logger.info "[Config] setting mode to '#{value}'"
         @mode = value
       else
-        Zabbix.logger.error "[Config] failed setting mode to '#{value}'"
         raise "Unsupported mode: #{value}"
       end
     end
