@@ -41,7 +41,7 @@ module Zabbix
     # @return [Yell] creates a new or returns the +Yell+ logger instance
     def logger
       @logger ||= Yell.new do |l|
-        l.adapter :datefile, :filename => self.config.log_file_path, :symlink => false
+        l.adapter self.config.log_adapter, :filename => self.config.log_file_path, :symlink => false
       end
     end
   end

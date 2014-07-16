@@ -20,14 +20,31 @@ module Zabbix
 
     # @return [String] the zabbix agentd config file location
     attr_accessor :config_file_path
+
     # @note
     #   (optional) Defaults to +./log/#{RACK_ENV}.log+
     # @return [String] The zabbix-monitor log file location (optional)
     attr_accessor :log_file_path
+
+    # @overload log_adapter
+    #   @return [Symbol] The zabbix-monitor log adapter
+    # @overload log_adapter=(value)
+    #   Sets the yell / zabbix-monitor log adapter
+    #   See https://github.com/rudionrails/yell#usage for more information (optional)
+    #
+    #   Options:
+    #     :stdout logs to STDOUT
+    #     :stderr logs to STDERR
+    #     :file logs to a file
+    #     :datefile logs to a timestamped file
+    attr_accessor :log_adapter
+
     # @return [String] the zabbix hostname
     attr_accessor :host_name
+
     # @return [Array<Symbol>] the set of rules to monitor
     attr_accessor :rules
+
     # @overload mode
     #   @return [Symbol] the mode zabbix-monitor uses to process the results of the rules
     # @overload mode=(value)
@@ -54,6 +71,10 @@ module Zabbix
 
     def log_file_path
       @log_file_path || nil
+    end
+
+    def log_adapter
+      @log_adapter || :file
     end
 
   end
