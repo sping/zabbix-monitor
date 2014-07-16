@@ -37,6 +37,8 @@ module Zabbix
     #     :stderr logs to STDERR
     #     :file logs to a file
     #     :datefile logs to a timestamped file
+    #   @param value [Symbol] the log_adapter
+    #   @return [Symbol] the new log_adapter
     attr_accessor :log_adapter
 
     # @return [String] the zabbix hostname
