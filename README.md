@@ -31,7 +31,7 @@ Or install it yourself as:
 
 To include the rake tasks in your application, add the following line to your Rakefile (before `App::Application.load_tasks`):
 
-    require 'zabbix/tasks'
+    require 'tasks/zabbix'
 
 ## Usage
 
