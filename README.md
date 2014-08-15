@@ -69,7 +69,7 @@ Put your monitoring rules in `config.rules`. Each rule contains a Ruby command t
 
 Start running your monitoring jobs with:
 
-    $ rake zabbix:collect_data
+    $ rake zabbix:start
 
 ### File mode
 
