@@ -69,7 +69,7 @@ module Zabbix
       result = `zabbix_sender -c #{config.config_file_path} -s "#{config.host_name}" -k #{key} -o #{value}`
       case $?.to_i
       when 0 # SUCCESS
-        Zabbix.logger.info "[Monitor] successfully sended rule: '#{key}' to zabbix server: '#{config.host_name}'"
+        Zabbix.logger.info "[Monitor] successfully sent rule: '#{key}' with value: '#{value}' to zabbix server: '#{config.host_name}'"
       else
         Zabbix.logger.error "[Monitor] failed sending rule: '#{key}' with value: '#{value}' to zabbix server: '#{config.host_name}'"
       end
