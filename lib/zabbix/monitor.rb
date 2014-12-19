@@ -2,6 +2,7 @@ require 'json'
 require 'yaml'
 require 'fileutils'
 require 'rufus-scheduler'
+require 'active_record'
 
 module Zabbix
 
@@ -13,9 +14,7 @@ module Zabbix
     def schedule
       Rufus::Scheduler.new.tap do |scheduler|
         scheduler.every '1m' do
-          ActiveRecord::Base.connection_pool.with_connection do
-            collect_data
-          end
+          scheduled_collect_data
         end
       end.join
     end
@@ -102,6 +101,12 @@ module Zabbix
     # @return [void]
     def to_stdout key, value
       $stdout.puts "#{key}: #{value}"
+    end
+
+    def scheduled_collect_data
+      ActiveRecord::Base.connection_pool.with_connection do
+        collect_data
+      end
     end
   end
 end
