@@ -92,7 +92,7 @@ describe Zabbix::Monitor do
     end
     it 'outputs GREAT if the command is executed without errors' do
       monitor.stub(:'`') { `(exit 0)` }
-      expect(logger).to receive(:info).with(/successfully sended rule: 'key' to zabbix server: 'servername'/)
+      expect(logger).to receive(:info).with(/successfully sent rule: 'key' with value: 'value' to zabbix server: 'servername'/)
       monitor.send(:to_zabbix, 'key', 'value')
     end
     it 'outputs BUMMER if the command is executed with an error' do
