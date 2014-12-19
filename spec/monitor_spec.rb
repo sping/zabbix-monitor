@@ -6,18 +6,37 @@ describe Zabbix::Monitor do
   let(:config)  { Zabbix::Config.new }
 
   before :each do
-    Zabbix.stub(:config) { config }
+    allow(Zabbix).to receive(:config).and_return(config)
   end
 
   describe "#config" do
     it 'returns the Zabbix monitor instance config' do
-      monitor.send(:config).should eq config
+      expect(Zabbix).to receive(:config)
+      monitor.send(:config)
+    end
+  end
+
+  describe '#scheduled_collect_data' do
+    it 'calls the #collect_data with an ActiveRecord connection from the pool' do
+      fake_connection = double
+      allow(fake_connection).to receive(:with_connection).and_yield
+      allow(ActiveRecord::Base).to receive(:connection_pool).and_return fake_connection
+      expect(monitor).to receive(:collect_data).once
+      monitor.send(:scheduled_collect_data)
     end
   end
 
   describe '#schedule' do
+    let(:fake_rufus) { double }
+    let(:fake_collect_data) { double }
+
     it 'schedule the data collector to run every minute' do
-      pending 'add scheduler test magic here'
+      allow(fake_collect_data).to receive(:join)
+      allow(fake_rufus).to receive(:every).and_yield
+
+      expect_any_instance_of(Rufus::Scheduler).to receive(:tap).and_yield fake_rufus
+      expect(monitor).to receive(:scheduled_collect_data).once.and_return fake_collect_data
+      monitor.schedule
     end
   end
 
@@ -26,9 +45,9 @@ describe Zabbix::Monitor do
     # 'raise exception invalid rule, invalid command, no command'
     describe "one rule" do
       before :each do
-        config.stub(:rules) {[
+        allow(config).to receive(:rules).and_return([
           { :command => 'cmd', :zabbix_key => 'some.key' }
-        ]}
+        ])
       end
       it 'executes the command once and passes it to process' do
         expect(monitor).to receive(:eval).once.and_return("result")
@@ -45,10 +64,11 @@ describe Zabbix::Monitor do
     end
     describe "two rules" do
       before :each do
-        config.stub(:rules) {[
+        rules = [
           { :command => 'cmd', :zabbix_key => 'some.key' },
           { :command => 'cmd', :zabbix_key => 'another.key' }
-        ]}
+        ]
+        allow(config).to receive(:rules).and_return rules
       end
       it 'executes the command once and passes it to process' do
         expect(monitor).to receive(:eval).twice.and_return("result")
@@ -87,16 +107,16 @@ describe Zabbix::Monitor do
     end
     it 'executes the zabbix_sender command with the correct arguments' do
       expect(monitor).to receive(:'`').once.with('zabbix_sender -c /zabbix.conf -s "servername" -k key -o value')
-      monitor.stub(:puts) {}
+      allow(monitor).to receive(:puts)
       monitor.send(:to_zabbix, 'key', 'value')
     end
     it 'outputs GREAT if the command is executed without errors' do
-      monitor.stub(:'`') { `(exit 0)` }
+      allow(monitor).to receive(:'`').and_return(`(exit 0)`)
       expect(logger).to receive(:info).with(/successfully sent rule: 'key' with value: 'value' to zabbix server: 'servername'/)
       monitor.send(:to_zabbix, 'key', 'value')
     end
     it 'outputs BUMMER if the command is executed with an error' do
-      monitor.stub(:'`') { `(exit 1)` }
+      allow(monitor).to receive(:'`').and_return(`(exit 1)`)
       expect(logger).to receive(:error).with(/failed sending rule: 'key' with value: 'value' to zabbix server: 'servername'/)
       monitor.send(:to_zabbix, 'key', 'value')
     end
@@ -104,8 +124,8 @@ describe Zabbix::Monitor do
 
   describe "#to_file" do
     before :each do
-      File.stub(:exists?) { false }
-      File.stub(:open).with('tmp/zabbix-stats.yml', 'w')
+      allow(File).to receive(:exists?).and_return false
+      allow(File).to receive(:open).with('tmp/zabbix-stats.yml', 'w')
     end
     it 'creates the tmp folder if it does not exist' do
       expect(Dir).to receive(:mkdir).once.with('tmp')
@@ -118,11 +138,11 @@ describe Zabbix::Monitor do
       monitor.send(:to_file, 'key', 'value')
     end
     before :each do
-      Dir.stub(:exists?) { true }
+      allow(Dir).to receive(:exists?).and_return true
     end
     describe 'writeing and reading' do
       it 'writes the result to "tmp/zabbix-stats.yml"' do
-        File.stub(:exists?) { false }
+        allow(File).to receive(:exists?).and_return false
         file = double('file')
         yml = {'statistics' => {'created_at' => Time.now.to_i, 'key' => 'value'}}
 
@@ -131,7 +151,7 @@ describe Zabbix::Monitor do
         monitor.send(:to_file, 'key', 'value')
       end
       it 'adds the key and value to the output file if it already exists' do
-        File.stub(:exists?) { true }
+        allow(File).to receive(:exists?).and_return true
         file = double('file')
         yml = {'statistics' => {'created_at' => Time.now.to_i, 'old_key' => 'old_value'}}
 
