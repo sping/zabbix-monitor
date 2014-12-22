@@ -22,8 +22,8 @@ describe Zabbix::Reader do
 
   describe 'get_value' do
     before :each do
-      File.stub(:exists?) { true }
-      YAML.stub(:load_file) { {'statistics' => {'test' => 'OK'}} }
+      expect(File).to receive(:exists?).and_return true
+      expect(YAML).to receive(:load_file).and_return({'statistics' => {'test' => 'OK'}})
     end
     let(:reader) { Zabbix::Reader.new }
 
