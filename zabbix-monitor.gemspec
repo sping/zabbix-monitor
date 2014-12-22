@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rufus-scheduler', '~> 3.0'
   spec.add_dependency 'yell', '~> 2.0'
   spec.add_dependency 'dante', '~> 0.2.0'
-  spec.add_dependency 'activerecord', '>= 4.0'
+  spec.add_dependency 'activerecord', '>= 3.2'
 
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'bundler', '~> 1.3'
