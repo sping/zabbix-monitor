@@ -1,5 +1,9 @@
 # Zabbix Monitor Changelog
 
+## v0.0.10 (2014-12-22)
+
+- Require ActiveRecord 3.2 or higher
+
 ## v0.0.9 (2014-12-22)
 
 - Fixed some logging, docs and specs
