@@ -96,6 +96,23 @@ else
 fi
 ```
 
+## Capistrano
+
+Capistrano tasks are added in lib/tasks/zabbix.rb. Currently, only Capistrano 2 is supported. Add the following lines of code to your deploy.rb:
+
+```ruby
+require 'zabbix/capistrano'
+
+namespace :deploy do
+
+  # if you're running God.rb, it will be restarted automatically
+  after 'deploy:update_code', 'zabbix:stop'
+  # else
+  after 'deploy:update_code', 'zabbix:restart'
+
+end
+```
+
 ## Changelog
 
 A detailed overview can be found in the [CHANGELOG](CHANGELOG.md).
