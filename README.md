@@ -48,6 +48,7 @@ Zabbix.configure do |config|
   # config.log_file_path = '/var/log/monitor.log'
   config.host_name = 'servername'
   config.mode = :push
+  config.interval = '1m'
   config.rules = [
     {
       :command => 'Monitor.new.test',

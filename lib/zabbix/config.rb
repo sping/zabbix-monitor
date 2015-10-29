@@ -61,7 +61,11 @@ module Zabbix
     #   @return [Symbol] the new mode
     #   @raise [StandardError] when a unsupported mode is specified
     attr_accessor :mode
-
+	
+	# @data collection interval
+	#	Allows to set the interval directly in initializer. It is more convenient this way.
+    attr_accessor :interval
+	
     def mode= value
       allowed_modes = [:push, :file, :stdout].freeze
       if allowed_modes.include?(value)
@@ -77,6 +81,10 @@ module Zabbix
 
     def log_adapter
       @log_adapter || :file
+    end
+	
+	def interval
+      @interval || '1m'
     end
 
   end
