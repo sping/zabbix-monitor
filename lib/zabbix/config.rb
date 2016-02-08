@@ -8,6 +8,7 @@ module Zabbix
   #     config.log_file_path = '/var/log/monitor.log' #optional
   #     config.host_name = 'servername'
   #     config.mode = :push
+  #     config.interval = '1m'
   #     config.rules = [
   #       {
   #         :command => 'Monitor.new.test',
@@ -62,6 +63,9 @@ module Zabbix
     #   @raise [StandardError] when a unsupported mode is specified
     attr_accessor :mode
 
+    # @return [String] the data collection interval in format [NUMBER[smhd]], e.g. '30s' (thirty seconds)
+    attr_accessor :interval
+
     def mode= value
       allowed_modes = [:push, :file, :stdout].freeze
       if allowed_modes.include?(value)
@@ -77,6 +81,10 @@ module Zabbix
 
     def log_adapter
       @log_adapter || :file
+    end
+
+    def interval
+      @interval || '1m'
     end
 
   end

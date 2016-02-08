@@ -13,7 +13,7 @@ module Zabbix
     # @return [void]
     def schedule
       Rufus::Scheduler.new.tap do |scheduler|
-        scheduler.every '1m' do
+        scheduler.every config.interval do
           scheduled_collect_data
         end
       end.join
